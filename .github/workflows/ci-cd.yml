@@ -1,0 +1,135 @@
+name: CI/CD - DOSW Parcial T2
+
+on:
+  push:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serializar cada rama sin interrumpir una publicación o un despliegue en curso.
+concurrency:
+  group: dosw-cicd-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Cada reejecución conserva una referencia propia; Azure nunca consume latest.
+  IMAGE_TAG: ${{ github.ref_name }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    # workflow_dispatch también puede seleccionar otras ramas.
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Compilar, probar y generar reporte JaCoCo
+        run: mvn -B clean verify --no-transfer-progress
+      - name: Publicar reporte de cobertura como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          if-no-files-found: error
+      - name: Publicar resultados de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-results
+          path: target/surefire-reports/
+          if-no-files-found: error
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    env:
+      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/dosw-parcial-t2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Construir y cargar imagen local sin credenciales
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          push: false
+          tags: dosw-parcial:ci
+          cache-from: type=gha,scope=${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}
+      - name: Validar requisitos de publicación y separación de destinos
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DEVELOP_APP: ${{ vars.AZURE_WEBAPP_NAME_DEVELOP }}
+          MAIN_APP: ${{ vars.AZURE_WEBAPP_NAME_MAIN }}
+        run: |
+          for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN DEVELOP_APP MAIN_APP; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Falta $name. Consultar README, sección 10."
+              exit 1
+            fi
+          done
+          if [[ "${DEVELOP_APP,,}" == "${MAIN_APP,,}" ]]; then
+            echo "::error::main y develop deben usar App Services distintos."
+            exit 1
+          fi
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publicar la imagen construida con etiqueta única
+        run: |
+          docker tag dosw-parcial:ci "$IMAGE_NAME:$IMAGE_TAG"
+          docker push "$IMAGE_NAME:$IMAGE_TAG"
+          # Mantener alias para consulta; el despliegue usa la etiqueta única.
+          docker tag dosw-parcial:ci "$IMAGE_NAME:$GITHUB_REF_NAME"
+          docker push "$IMAGE_NAME:$GITHUB_REF_NAME"
+          if [[ "$GITHUB_REF_NAME" == "main" ]]; then
+            docker tag dosw-parcial:ci "$IMAGE_NAME:latest"
+            docker push "$IMAGE_NAME:latest"
+          fi
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    env:
+      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/dosw-parcial-t2
+    steps:
+      - name: Validar credenciales y destino Azure
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          DEVELOP_APP: ${{ vars.AZURE_WEBAPP_NAME_DEVELOP }}
+          MAIN_APP: ${{ vars.AZURE_WEBAPP_NAME_MAIN }}
+        run: |
+          if [[ -z "$AZURE_CREDENTIALS" || -z "$DEVELOP_APP" || -z "$MAIN_APP" ]]; then
+            echo "::error::Faltan AZURE_CREDENTIALS o nombres de App Service. Consultar README, sección 10."
+            exit 1
+          fi
+          if [[ "${DEVELOP_APP,,}" == "${MAIN_APP,,}" ]]; then
+            echo "::error::main y develop deben usar App Services distintos."
+            exit 1
+          fi
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ github.ref_name == 'main' && vars.AZURE_WEBAPP_NAME_MAIN || vars.AZURE_WEBAPP_NAME_DEVELOP }}
+          images: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

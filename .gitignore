@@ -1,24 +1,41 @@
-# Compiled class file
+# Java / Maven
+/target/
 *.class
-
-# Log file
 *.log
 
-# BlueJ files
-*.ctxt
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Secrets / local configs
+.env
+.env.*
+!.env.example
+*.p12
+*.pem
+*.key
+*.jks
+*.pfx
+*.publishsettings
+*.PublishSettings
+azure-credentials*.json
+service-principal*.json
 
-# Package Files #
+# Herramientas y artefactos locales
+.azure/
+.aws/
+.docker/
+.codex/
+.agents/
 *.jar
 *.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# OS
+.DS_Store
+Thumbs.db
