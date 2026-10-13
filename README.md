@@ -2,9 +2,9 @@
 
 Proyecto individual para el **Parcial Práctico del Segundo Tercio — DOSW**, basado en **Parte 1.1 · Prerrequisitos**.
 
-> **Estado actual:** proyecto base MVC operativo localmente y desplegado en Azure. El estudiante confirmó el pipeline exitoso en `develop`, la publicación en Docker Hub y el acceso público a health y Swagger. La auditoría local del 12 de octubre de 2026 confirmó Maven y JaCoCo. La autenticación JWT completa y la lógica de negocio corresponden al laboratorio posterior. Las capturas auténticas todavía no están incorporadas al repositorio.
+> **Estado actual:** proyecto base MVC operativo localmente y desplegado en Azure. Se integraron nueve capturas auténticas revisadas, con sus límites de evidencia. Dos capturas quedan excluidas por datos privados; faltan capturas completas de health y Swagger en Azure. La autenticación JWT completa y la lógica de negocio corresponden al laboratorio posterior. Profesor como colaborador: pendiente.
 
-La [auditoría final](docs/reporte-final-prerrequisitos.md) distingue comprobaciones locales, resultados remotos aportados por el estudiante y pendientes. El [inventario de evidencias](docs/images/README.md) define los nombres sugeridos; no contiene imágenes simuladas.
+La [auditoría final](docs/reporte-final-prerrequisitos.md) distingue comprobaciones locales, capturas revisadas, resultados aportados por el estudiante y pendientes. El [inventario de evidencias](docs/images/README.md) registra los archivos reales, sus tamaños y las exclusiones de publicación.
 
 ## Índice
 
@@ -54,7 +54,7 @@ Spring Security usa sesiones `STATELESS` y exige autenticación en las demás ru
 | Servicio Azure | [Abrir aplicación](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net) |
 | Health público | [GET /api/v1/health](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/api/v1/health) |
 | Swagger público | [Swagger UI](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/swagger-ui/index.html) |
-| Docker Hub | Imagen publicada por el pipeline, confirmado por el estudiante; URL, propietario y etiqueta exacta pendientes de incorporar con evidencia |
+| Docker Hub | [danielvalero09/dosw-parcial-t2](https://hub.docker.com/r/danielvalero09/dosw-parcial-t2), propietario, alias `develop`, etiqueta única y digest corroborados con su API pública; detalle en la sección 10 |
 
 App Service confirmado: **`dosw-parcialt2-daniel-dev`**, Linux, región **West US**. El estudiante abrió Swagger públicamente y ejecutó el health desde Swagger con **HTTP 200** y respuesta:
 
@@ -62,9 +62,27 @@ App Service confirmado: **`dosw-parcialt2-daniel-dev`**, Linux, región **West U
 {"status":"UP","service":"DOSW-ParcialT2"}
 ```
 
-MongoDB Atlas: clúster **DOSW-ParcialT2**. Según los registros revisados por el estudiante, el driver desde Azure establece conexiones de monitoreo con el nodo primario y dos secundarios. **No se ha verificado un ping o una lectura autenticada desde Azure**. Ni esos logs ni el HTTP 200 de health prueban esa operación.
+### Azure App Service
 
-Estos resultados remotos provienen del contexto confirmado por el estudiante; no se repitieron ni se realizó un nuevo despliegue durante esta auditoría. Faltan las capturas enumeradas en el [inventario](docs/images/README.md).
+App Service Linux en West US y publicación por contenedor visibles en la captura revisada. **Imagen excluida de publicación:** `azure-app-service.png` contiene un identificador privado de suscripción. Se conserva localmente; requiere saneamiento y autorización antes de incorporarse.
+
+### Respuesta HTTP 200 y evidencia pendiente de Swagger
+
+![Respuesta HTTP 200 con el JSON del servicio](docs/images/azure-swagger.png)
+
+La captura muestra código **200** y el JSON esperado. El estudiante la identifica como la respuesta del health en Swagger de Azure, pero el recorte no muestra dominio, endpoint ni interfaz completa. No verifica por sí sola la URL pública ni Swagger cargado. No existe `azure-health-200.png`; quedan pendientes capturas completas con URL y endpoint visibles.
+
+### MongoDB Atlas y conexión de monitoreo
+
+![Clúster DOSW-ParcialT2 en MongoDB Atlas](docs/images/mongodb-atlas-cluster.png)
+
+Clúster **DOSW-ParcialT2**, región Azure California (westus), nivel Free y tres nodos visibles: un primario y dos secundarios.
+
+![Registros del driver MongoDB en el App Service](docs/images/azure-mongodb-connection.png)
+
+Los registros del App Service muestran conexiones exitosas de **monitoreo del driver** al primario y a dos secundarios. **No acreditan una operación autenticada de lectura o escritura, ni un ping autenticado desde Azure**. El health tampoco consulta MongoDB.
+
+Las capturas documentan el estado observado al recopilarlas; no se realizó un nuevo despliegue ni se repitieron operaciones remotas. El [inventario](docs/images/README.md) detalla el alcance y los pendientes.
 
 ## 4. Estructura del proyecto
 
@@ -72,7 +90,7 @@ Estos resultados remotos provienen del contexto confirmado por el estudiante; no
 DOSW_ParcialT2_DanielValero/
 ├── docs/
 │   ├── uml/                         Diagramas fuente (.gitkeep)
-│   ├── images/                      Inventario y futuras capturas auténticas
+│   ├── images/                      Inventario y capturas auténticas revisadas
 │   ├── auditoria-primer-commit.md   Antecedente histórico del 10 de octubre
 │   └── reporte-final-prerrequisitos.md
 ├── src/
@@ -209,7 +227,7 @@ mvn test
 mvn clean verify
 ```
 
-El primer comando ejecuta las pruebas; el segundo limpia, prueba, genera cobertura y empaqueta. El **12 de octubre de 2026**, `mvn clean verify` terminó con **BUILD SUCCESS**, salida **0**, **7 pruebas, 0 failures, 0 errors y 0 skipped**, con Java **21.0.10**. Tiempo total: **30,341 s**.
+El primer comando ejecuta las pruebas; el segundo limpia, prueba, genera cobertura y empaqueta. En esta revisión, el **12 de octubre de 2026 a las 23:43:46 -05:00**, `mvn clean verify` terminó con **BUILD SUCCESS**, salida **0**, **7 pruebas, 0 failures, 0 errors y 0 skipped**, con Java **21.0.10**. Tiempo total: **30,329 s**.
 
 | Métrica JaCoCo | Cubierto / total | Resultado |
 |---|---|---|
@@ -218,11 +236,21 @@ El primer comando ejecuta las pruebas; el segundo limpia, prueba, genera cobertu
 | Métodos | 10/11 | 90,91 % |
 | Clases | 4/4 | 100 % |
 
-Se revisaron los reportes [HTML local](target/site/jacoco/index.html) y [XML local](target/site/jacoco/jacoco.xml), generados por Maven y excluidos de Git. En un clon nuevo deben regenerarse. El porcentaje de 94 % mostrado en el resumen HTML corresponde a instrucciones, no a líneas. No hay contador de ramas ni umbral mínimo configurado.
+Se revisaron los reportes locales `target/site/jacoco/index.html` y `target/site/jacoco/jacoco.xml`, generados por Maven y excluidos de Git. En un clon nuevo deben regenerarse; no se enlazan como archivos disponibles en GitHub. El porcentaje de 94 % mostrado en el resumen HTML corresponde a instrucciones, no a líneas. No hay contador de ramas ni umbral mínimo configurado.
 
 Las siete pruebas comprueban el controlador de salud, su respuesta HTTP pública, Swagger, OpenAPI JSON/YAML, el rechazo de solicitudes anónimas a otras rutas y una sola cadena de seguridad. No ejecutan consultas MongoDB ni validan JWT completo. Los avisos de Mockito/Byte Buddy y Springdoc no produjeron fallos.
 
-**Capturas pendientes:** `01-maven-build-success.png` y `02-jacoco-reporte.png`, según el [inventario](docs/images/README.md). No existen imágenes verificables que enlazar todavía.
+### Maven: construcción y pruebas satisfactorias
+
+![Maven BUILD SUCCESS y siete pruebas sin fallos](docs/images/maven-build-success.png)
+
+Terminal real del proyecto: **BUILD SUCCESS**, siete pruebas sin fallos, errores ni omisiones, y empaquetado del JAR. La ejecución capturada duró **21,323 s**, finalizada el **12 de octubre de 2026 a las 23:26:28 -05:00**; es independiente de la validación actual.
+
+### JaCoCo: cobertura del proyecto base
+
+![Resumen JaCoCo del proyecto DOSW-ParcialT2](docs/images/jacoco-cobertura.png)
+
+Dos líneas sin cubrir de 19: **17/19 = 89,47 %**. El **94 %** de la columna Cov. corresponde a instrucciones (82/87), no a líneas ni a funcionalidades de negocio.
 
 ## 9. Docker
 
@@ -243,7 +271,13 @@ En Windows/Mac, `host.docker.internal` permite alcanzar MongoDB del host; `local
 
 **Resultados existentes:** construcción y ejecución local satisfactorias, confirmadas por el estudiante. La [auditoría histórica](docs/auditoria-primer-commit.md) registra build con pruebas y un contenedor con health/Swagger HTTP 200. La imagen también fue publicada en Docker Hub mediante Actions. No se reconstruyó, arrancó ni publicó una imagen durante esta auditoría final.
 
-La comprobación histórica de ping contra MongoDB local no acredita una operación autenticada contra Atlas desde Azure. **Capturas pendientes:** `03-docker-contenedor.png` y `04-dockerhub-imagen-publicada.png`.
+### Contenedor local en Docker Desktop
+
+![Contenedores locales en Docker Desktop](docs/images/docker-container-running.png)
+
+La captura existe y muestra un contenedor activo con prefijo `dosw-parcial-wi` y puertos **8081:8080**. Nombres e imágenes están truncados y no aparece una respuesta HTTP local: evidencia parcial de ejecución, sin verificar el tag completo, el build ni health. La publicación en Docker Hub se muestra en la sección 10.
+
+La comprobación histórica de ping contra MongoDB local no acredita una operación autenticada contra Atlas desde Azure.
 
 ## 10. CI/CD
 
@@ -253,7 +287,7 @@ El [workflow](.github/workflows/ci-cd.yml) se activa con push a `main` o `develo
 2. `docker`: construye la imagen Linux AMD64 con Buildx, valida los nombres de secrets requeridos, inicia sesión en Docker Hub y publica la imagen construida.
 3. `deploy_develop` o `deploy_main`: según la rama, inicia sesión en Azure y despliega la etiqueta única entregada por el job `docker`.
 
-**Ejecución remota confirmada por el estudiante en `develop`:** `test`, `docker` y `deploy_develop` exitosos; `deploy_main` omitido correctamente por su condición de rama. La imagen fue publicada en Docker Hub y la aplicación quedó accesible en Azure. Faltan el enlace de la ejecución, su SHA, la etiqueta/digest y las capturas para corroborarlo desde el repositorio. No se declara probado un despliegue desde `main`.
+**Ejecución respaldada por captura y API pública en `develop`:** [Actions, run 38341584719](https://github.com/DanielValero09/DOSW_ParcialT2_DanielValero/actions/runs/38341584719). `test`, `docker` y `deploy_develop` exitosos; `deploy_main` omitido correctamente por su condición de rama. La captura muestra el SHA corto **`80cc2b1`**, evento **push**, intento **4** y duración **1 min 36 s**. La API confirma el SHA **`80cc2b1036b5e18819a37b54c3f711c75b6bf651`** y el inicio del intento el **12 de octubre de 2026, 22:49:48 -05:00**. Ese SHA es anterior a la documentación `173b6b8`; no prueba una ejecución sobre el HEAD actual. No se declara probado un despliegue desde `main`.
 
 | Rama | Entorno declarado | Etiquetas publicadas | Destino Azure declarado |
 |---|---|---|---|
@@ -271,17 +305,36 @@ Azure consume la etiqueta única publicada. `develop` no publica `latest`. La se
 
 El pipeline operativo de `develop` reemplaza el estado anterior de preparación pendiente. Su éxito no acredita un ping o lectura autenticada en Atlas. Las pruebas CI no requieren credenciales reales de JWT ni operaciones sobre MongoDB. La configuración y ejecución de producción siguen sin verificarse y no se necesitan para documentar el despliegue de desarrollo.
 
-**Evidencias pendientes de incorporar:** `05-github-actions-develop.png`, `04-dockerhub-imagen-publicada.png`, `06-azure-health-http-200.png` y `07-azure-swagger-ui.png`. Ver el [inventario](docs/images/README.md) y la [tabla de cumplimiento](docs/reporte-final-prerrequisitos.md#tabla-de-cumplimiento).
+### GitHub Actions: pipeline exitoso en develop
+
+![Pipeline de develop con test, docker y deploy_develop exitosos](docs/images/github-actions-success.png)
+
+Estado **Success** para `80cc2b1`; producción aparece omitida. El enlace anterior fue obtenido de la API de GitHub, con coincidencia de SHA, número de ejecución, intento y jobs.
+
+### Docker Hub: imagen publicada
+
+![Repositorio Docker Hub con etiquetas publicadas](docs/images/dockerhub-image.png)
+
+Repositorio **[danielvalero09/dosw-parcial-t2](https://hub.docker.com/r/danielvalero09/dosw-parcial-t2)** con cuatro etiquetas visibles, incluido el alias **`develop`**. Las etiquetas únicas están truncadas en la imagen; la [API pública de etiquetas](https://hub.docker.com/v2/repositories/danielvalero09/dosw-parcial-t2/tags?page_size=10) confirmó Linux AMD64 y estos identificadores del intento 4:
+
+- Imagen: `danielvalero09/dosw-parcial-t2:develop-80cc2b1036b5e18819a37b54c3f711c75b6bf651-38341584719-4`.
+- Digest: `sha256:09923bf86f29d7656421d2bbab91f0dee254dc1cf6857b5dd1cf88e27c5ab573`.
+- Publicación registrada: **12 de octubre de 2026, 22:50:54 -05:00**. El alias `develop` tenía el mismo digest al consultar.
+
+La etiqueta coincide con SHA, run e intento de Actions. No se inspeccionó el digest del contenedor activo en Azure.
+
+Ver el [inventario](docs/images/README.md) y la [tabla de cumplimiento](docs/reporte-final-prerrequisitos.md#tabla-de-cumplimiento).
 
 ## 11. Herramientas de modelado y diseño (evidencias)
 
-Herramienta UML: **pendiente de confirmar la selección y el acceso a la cuenta** (Lucidchart, Draw.io o Miro). `docs/uml/` conserva `.gitkeep`; no contiene diagramas del laboratorio.
+### Herramienta UML: Draw.io / diagrams.net
 
-Herramienta de interfaces: **Figma**; el acceso a una cuenta **no está verificado**.
+![Editor Draw.io abierto en app.diagrams.net](docs/images/uml-herramienta.png)
 
-- Captura UML pendiente: `10-cuenta-uml.png`.
-- Captura Figma pendiente: `11-cuenta-figma.png`.
+Editor **app.diagrams.net** abierto y disponible. El lienzo está vacío: demuestra acceso a la herramienta, no una cuenta autenticada ni un diagrama UML terminado. `docs/uml/` conserva `.gitkeep`.
 
-No hay capturas auténticas en el repositorio que permitan insertar referencias Markdown a imágenes existentes. Incorporarlas y enlazarlas solo después de comprobar su contenido, según el [inventario](docs/images/README.md).
+### Figma: acceso observado, captura excluida
 
-Pendientes del estudiante: agregar al profesor y confirmar su acceso; aportar las capturas reales; completar enlaces de Actions y Docker Hub; verificar una operación MongoDB autenticada desde Azure y las cuentas UML/Figma. El grupo ya está registrado como **Grupo 1**. El detalle y las limitaciones de evidencia figuran en la [auditoría final](docs/reporte-final-prerrequisitos.md).
+La captura `figma-cuenta.png` muestra una sesión de Daniel Valero con archivos recientes y FigJam. **No se incorpora:** contiene un correo personal visible. El acceso fue observado, pero su evidencia publicable requiere saneamiento y autorización. No demuestra un prototipo del parcial terminado.
+
+Pendientes del estudiante: agregar al profesor y confirmar su acceso; sanear y autorizar las capturas excluidas; aportar vistas completas de health y Swagger en Azure; ampliar la evidencia Docker local y verificar una operación MongoDB autenticada desde Azure. El grupo ya está registrado como **Grupo 1**. El detalle figura en la [auditoría final](docs/reporte-final-prerrequisitos.md).

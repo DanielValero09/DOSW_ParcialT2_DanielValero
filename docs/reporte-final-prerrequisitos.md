@@ -1,84 +1,99 @@
 # Reporte final de prerrequisitos — DOSW Parcial T2
 
-Fecha: **12 de octubre de 2026**, America/Bogota. Estudiante: **Daniel Valero Quiroga**, **Grupo 1**. Trabajo individual. Profesor como colaborador: **pendiente de agregar**, según confirmación del estudiante.
+Revisión de evidencias: **12 de octubre de 2026**, America/Bogota. Estudiante: **Daniel Valero Quiroga**, **Grupo 1**. Profesor como colaborador: **pendiente de agregar y confirmar acceso**.
 
-## Referencia y alcance de la evidencia
+## Alcance y antecedentes
 
-Se leyó completo el HTML del profesor: `C:/Users/Daniel/Downloads/parcial-t2-prerequisitos.html`, **Parte 1.1 · Prerrequisitos**, secciones 1–10. SHA256 de la fuente: `CE02C8C93842896C5C71557AFC052C79F99EACC5AA8B03CDB7573F4493F2D381`. La fuente está fuera del repositorio y no fue modificada ni copiada como una evidencia de ejecución.
+Esta revisión integra exclusivamente capturas auténticas existentes en `docs/images/`. Conserva la matriz de requisitos de la auditoría documental previa, actualizando los estados solo cuando hay respaldo verificable. Su fuente académica registrada es el HTML del profesor `parcial-t2-prerequisitos.html`, Parte 1.1, secciones 1–10; SHA256 registrado: `CE02C8C93842896C5C71557AFC052C79F99EACC5AA8B03CDB7573F4493F2D381`. No se volvió a inspeccionar ni se modificó esa fuente externa en esta revisión.
 
-Se revisaron los 45 archivos versionados iniciales, la estructura local, las referencias Git, POM, configuración, Java, pruebas, Dockerfile, ignores y workflow. Se ejecutó `mvn clean verify` y se inspeccionaron JaCoCo HTML/XML y Surefire. Solo se modificó documentación.
+Se inspeccionaron Git, los tres documentos, las 11 imágenes y los reportes Maven actuales. Además se consultaron las APIs públicas de GitHub Actions y Docker Hub en modo de solo lectura. Las capturas muestran el estado al recopilarlas, no una comprobación continua de recursos externos. No se accedió a configuración privada de Azure ni se hicieron despliegues, publicaciones Docker o cambios remotos.
 
-Los resultados remotos se documentan a partir del **contexto verificado aportado por el estudiante**: Docker local satisfactorio; Actions completo exitoso en `develop`; `test`, `docker` y `deploy_develop` exitosos; `deploy_main` omitido; imagen publicada; App Service Linux en West US; Swagger público y health HTTP 200; Atlas y logs de monitoreo. No se accedió a cuentas remotas ni se repitieron esas operaciones. No se atribuye esta auditoría local como autora de dichas verificaciones.
-
-No se encontraron capturas auténticas en este repositorio. Por rigor, los requisitos remotos operativos pero sin captura o enlace de ejecución disponible se clasifican **Implementado pero pendiente de evidencia**. Eso indica ausencia de evidencia incorporada, no que el procedimiento siga sin realizarse. Las cuentas sin confirmación y las propiedades remotas no inspeccionadas permanecen **No verificado**.
+Los antecedentes de Docker local y acceso público a health/Swagger fueron aportados por el estudiante y figuran en la [auditoría histórica](auditoria-primer-commit.md). La nueva inspección distingue esos antecedentes del contenido realmente visible. Los logs de Atlas solo acreditan conexión exitosa de monitoreo del driver; **no demuestran una operación autenticada de lectura/escritura ni ping autenticado**. JWT completo y negocio siguen fuera del alcance y no se declaran implementados.
 
 ## Rama, HEAD y estado Git
 
-| Dato | Resultado |
+| Dato | Inicial / final |
 |---|---|
-| Rama inicial y final | `develop` |
-| HEAD inicial y final | `80cc2b1036b5e18819a37b54c3f711c75b6bf651` |
-| Rama local `main` | `f5a52cb8cf4ab7f54e09e8e2b2aa312312c9c1ac`, sin modificaciones |
-| Origen local configurado | [DanielValero09/DOSW_ParcialT2_DanielValero](https://github.com/DanielValero09/DOSW_ParcialT2_DanielValero) |
-| Referencias remotas guardadas | `origin/develop` coincide con HEAD; `origin/main` coincide con `main`. No hubo fetch ni comprobación del estado remoto actual |
-| Relación de ramas | `git merge-base --is-ancestor main develop`: salida 0; `main` es ancestro de `develop` |
-| Estado inicial | `git status --short` sin salida; árbol limpio, sin archivos en staging |
-| Estado final | Un archivo rastreado modificado y dos documentos nuevos sin seguimiento; sin cambios preparados |
-| SHA256 del índice inicial y final | `4A2A17D3A1D2399754DFDF8AB00DF3C100D453FF3FE0D6943B8F27E0F81DE95A`, idéntico |
+| Rama | `develop` / `develop` |
+| HEAD | `173b6b82c104c2bbb6a7da68c9a34a15bb921c44` / mismo SHA |
+| Commit documental requerido | `173b6b8 docs: update prerequisites and deployment evidence`, existente y HEAD inicial |
+| Tres últimos commits iniciales | `173b6b8`, `80cc2b1`, `d408383` |
+| `main` local | `f5a52cb8cf4ab7f54e09e8e2b2aa312312c9c1ac`, sin cambios |
+| Relación con origin/develop | develop adelantada un commit según referencias locales; sin fetch |
+| Estado inicial | 11 PNG nuevos ya preparados en índice; documentos sin cambios |
+| Estado final | Tres Markdown modificados sin preparar; nueve PNG permanecen preparados; dos PNG privados fuera del índice y excluidos localmente |
+| SHA256 índice inicial | `E6609138095E11586AB4AA70532761C2EFB08AF2DA2B1BBA4B68BD670ED1B742` |
+| SHA256 índice tras exclusiones | `F75CC669C0B7BAF25697CC9C565E0BB3A99124979A144FD83C77721A2535D157` |
+
+No se preservó el índice íntegro: se retiraron **únicamente** `docs/images/azure-app-service.png` y `docs/images/figma-cuenta.png` mediante `git restore --staged -- ...` para impedir que datos privados entren al siguiente commit. Los originales siguen locales e intactos, con exclusiones exactas en `.git/info/exclude`. Las otras nueve imágenes ya estaban preparadas antes de esta intervención; no se ejecutó `git add`.
 
 Estado final comprobado mediante `git status --short --untracked-files=all`:
 
 ```text
  M README.md
-?? docs/images/README.md
-?? docs/reporte-final-prerrequisitos.md
+ M docs/images/README.md
+A  docs/images/azure-mongodb-connection.png
+A  docs/images/azure-swagger.png
+A  docs/images/docker-container-running.png
+A  docs/images/dockerhub-image.png
+A  docs/images/github-actions-success.png
+A  docs/images/jacoco-cobertura.png
+A  docs/images/maven-build-success.png
+A  docs/images/mongodb-atlas-cluster.png
+A  docs/images/uml-herramienta.png
+ M docs/reporte-final-prerrequisitos.md
 ```
 
-No hubo cambio de rama ni de HEAD. La existencia de referencias `origin/*` acredita la información local guardada; no demuestra por sí sola la configuración actual en GitHub o los permisos del profesor.
+Los PNG excluidos se muestran como `!!` al solicitar `git status --short --ignored`; no aparecerán en el estado ordinario. Las referencias locales origin no acreditan el acceso del profesor ni el estado remoto actual de la documentación.
 
-## Archivos modificados y creados
+## Documentos actualizados
 
-| Archivo | Cambio |
+| Archivo | Resultado |
 |---|---|
-| [README.md](../README.md) | Actualizado, conservando las 11 secciones e índice enlazado |
-| [docs/images/README.md](images/README.md) | Creado: inventario de capturas auténticas pendientes y convención de nombres |
-| `docs/reporte-final-prerrequisitos.md` | Creado: este reporte |
+| [README.md](../README.md) | Conserva índice y exactamente 11 secciones principales. Nueve imágenes, cada una una sola vez, en §§3, 8, 9, 10 y 11; MongoDB como subsección de §3; exclusiones y límites explícitos |
+| [docs/images/README.md](images/README.md) | Inventario real, dimensiones, tamaños, privacidad, trazabilidad y pendientes |
+| `docs/reporte-final-prerrequisitos.md` | Auditoría actualizada, clasificación respaldada, validaciones y lista exacta recomendada para commit |
 
-Se actualizaron las secciones del README: **1**, nombre/grupo y profesor pendiente; **2**, alcance del servicio base; **3**, URLs reales, Azure y límite de comprobación Atlas; **4**, árbol y responsabilidades; **5**, tecnologías y versiones configuradas; **6**, variables y nombres de secrets; **7**, comandos locales; **8**, Maven/JaCoCo actuales; **9**, Docker construido y ejecutado; **10**, pipeline exitoso y publicación; **11**, cuentas UML/Figma y capturas pendientes. Se eliminaron las afirmaciones de que Azure, Docker Hub y Actions todavía no se habían realizado.
+Cambio adicional local: `.git/info/exclude`, con dos rutas privadas; no se versiona. Ninguna imagen se alteró, renombró o generó. Java, tests, POM, Dockerfile, workflow, configuración Azure y archivos de otros proyectos no fueron modificados. Maven regeneró únicamente artefactos ignorados en `target/`.
 
-No se modificaron Java, pruebas, POM, YAML, seguridad, Dockerfile, ignores ni workflow. Los generados de `target/` fueron regenerados por Maven y están ignorados.
+## Evidencias integradas, parciales y excluidas
 
-## Evidencias encontradas y pendientes
+**11 PNG válidos y visualizables; nueve aprobados para integración y dos excluidos por privacidad.** Hay además `.gitkeep` y el inventario, que no cuentan como imágenes. Se conserva una estructura plana y los nombres auténticos.
 
-**Evidencia local encontrada:** archivos implementados; ramas y genealogía local; siete pruebas ejecutadas; [JaCoCo HTML local](../target/site/jacoco/index.html), [JaCoCo XML local](../target/site/jacoco/jacoco.xml) y [Surefire local](../target/surefire-reports/). Estos reportes se regeneran al ejecutar Maven y no están versionados. No deben interpretarse como capturas ya anexadas al README.
-
-**Capturas encontradas: ninguna.** Al comenzar, `docs/images/` solo contenía `.gitkeep` vacío. Se conserva y se añade el inventario. No se crearon imágenes ni enlaces Markdown a capturas inexistentes. La [auditoría del primer commit](auditoria-primer-commit.md) es un antecedente histórico del 10 de octubre, no el estado actual: sus pendientes externos y sus detalles de configuración de CI/CD deben leerse en ese contexto; el README y este reporte describen el workflow actual.
-
-| ID | Captura sugerida en `docs/images/` | Estado |
+| ID | Evidencia real | README / alcance |
 |---|---|---|
-| E01 | `01-maven-build-success.png` | Pendiente de incorporar |
-| E02 | `02-jacoco-reporte.png` | Pendiente de incorporar |
-| E03 | `03-docker-contenedor.png` | Pendiente de incorporar |
-| E04 | `04-dockerhub-imagen-publicada.png` | Pendiente de incorporar |
-| E05 | `05-github-actions-develop.png` | Pendiente de incorporar |
-| E06 | `06-azure-health-http-200.png` | Pendiente de incorporar |
-| E07 | `07-azure-swagger-ui.png` | Pendiente de incorporar |
-| E08 | `08-mongodb-atlas-cluster.png` | Pendiente de incorporar |
-| E09 | `09-azure-mongodb-conexiones.png` | Pendiente de incorporar |
-| E10 | `10-cuenta-uml.png` | Pendiente; cuenta/selección no verificada |
-| E11 | `11-cuenta-figma.png` | Pendiente; acceso no verificado |
+| E01 | [Maven BUILD SUCCESS](images/maven-build-success.png) | §8; siete pruebas sin fallos, generación JaCoCo y JAR; captura de 23:26:28 -05:00, 21,323 s |
+| E02 | [JaCoCo](images/jacoco-cobertura.png) | §8; 17/19 líneas (89,47 %), 82/87 instrucciones (94,25 %; HTML 94 %) |
+| E03 | [Docker local](images/docker-container-running.png) | §9; activo y 8081:8080; nombres e imagen truncados, sin build ni health HTTP local |
+| E04 | [Docker Hub](images/dockerhub-image.png) | §10; repositorio danielvalero09/dosw-parcial-t2 y cuatro tags; API completa etiqueta/digest |
+| E05 | [GitHub Actions](images/github-actions-success.png) | §10; pipeline develop Success, SHA 80cc2b1, intento 4; tres jobs verdes, producción omitida |
+| E06 | `azure-health-200.png` | **Ausente**; no enlazada. Falta dominio, endpoint y 200/JSON en una captura completa |
+| E07 | [Recorte de respuesta Swagger](images/azure-swagger.png) | §3; 200 y JSON esperado, sin URL ni endpoint ni UI completa. No demuestra por sí solo health público Azure o Swagger cargado |
+| E08 | [Clúster Atlas](images/mongodb-atlas-cluster.png) | §3; DOSW-ParcialT2, Free, Azure westus, primario y secundarios |
+| E09 | [Monitoreo del driver desde Azure](images/azure-mongodb-connection.png) | §3; conexión al primario y dos secundarios; sin acreditar operación autenticada |
+| E10 | [Herramienta UML](images/uml-herramienta.png) | §11; app.diagrams.net abierto, lienzo vacío. No verifica cuenta ni UML terminado |
+| E11 | `figma-cuenta.png` | **Excluida**, correo personal visible. Sesión de Daniel Valero observada; falta evidencia publicable |
+| E12 | `azure-app-service.png` | **Excluida**, identificador privado de suscripción. Linux, West US y contenedor observados; falta evidencia publicable |
 
-El [inventario completo](images/README.md) especifica el contenido comprobable de cada captura. Faltan además enlace/fecha/SHA de Actions y URL/propietario/etiqueta/digest de Docker Hub. No se deduce el usuario Docker Hub del usuario GitHub.
+Tamaños exactos y dimensiones: [inventario](images/README.md). Total **1228299 bytes (1,17 MiB)**; aprobadas **900869 bytes (0,86 MiB)**. Máximo **213551 bytes**, sin tamaños desproporcionados. Los 11 hashes SHA256 son distintos y la revisión visual no encontró duplicados innecesarios.
 
-## Resultado técnico local
+## Enlaces y trazabilidad comprobados
 
-`mvn clean verify`: salida **0**, **BUILD SUCCESS**, tiempo **30,341 s**, terminado a las **23:09:23 -05:00**, Java **21.0.10**, Spring Boot **3.5.16**. Las pruebas y el empaquetado del proyecto base siguen funcionando.
+- [Actions: run 38341584719](https://github.com/DanielValero09/DOSW_ParcialT2_DanielValero/actions/runs/38341584719). [API del intento 4](https://api.github.com/repos/DanielValero09/DOSW_ParcialT2_DanielValero/actions/runs/38341584719/attempts/4): SHA `80cc2b1036b5e18819a37b54c3f711c75b6bf651`, push, success; inicio **12/10/2026 22:49:48 -05:00**. La [API de jobs](https://api.github.com/repos/DanielValero09/DOSW_ParcialT2_DanielValero/actions/runs/38341584719/attempts/4/jobs) verifica test/docker/deploy_develop success y deploy_main skipped, coincidentes con E05. Es un commit anterior al HEAD documental actual.
+- [Docker Hub: danielvalero09/dosw-parcial-t2](https://hub.docker.com/r/danielvalero09/dosw-parcial-t2). La [API pública de tags](https://hub.docker.com/v2/repositories/danielvalero09/dosw-parcial-t2/tags?page_size=10) verificó imagen Linux AMD64, etiqueta `develop-80cc2b1036b5e18819a37b54c3f711c75b6bf651-38341584719-4` y digest `sha256:09923bf86f29d7656421d2bbab91f0dee254dc1cf6857b5dd1cf88e27c5ab573`. Publicación **12/10/2026 22:50:54 -05:00**. El alias develop compartía el digest al consultar. La etiqueta coincide con SHA/run/intento; no se inspeccionó el digest activo en Azure.
+- [Health público declarado](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/api/v1/health) y [Swagger público declarado](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/swagger-ui/index.html): dominio aportado por el estudiante, conservado literalmente. En esta tarea no se repitió su comprobación HTTP; faltan las capturas completas.
+
+Las páginas HTML de GitHub/Docker Hub no estuvieron disponibles mediante la consulta web inicial; se verificaron identificadores y resultados por las APIs públicas. Los enlaces relativos se resuelven respecto del documento que los contiene. Se retiraron enlaces a reportes ignorados bajo `target/` para evitar enlaces rotos en GitHub: sus rutas se documentan como código y se regeneran con Maven.
+
+## Resultado técnico local y validación
+
+`mvn clean verify`: **salida 0**, **BUILD SUCCESS**, **30,329 s**, finalizado el **12/10/2026 a las 23:43:46 -05:00**; Java **21.0.10**, Spring Boot **3.5.16**. La captura E01 documenta otra ejecución auténtica y no se reemplazó por una captura generada.
 
 | Suite Surefire | Pruebas | Fallos | Errores | Omitidas |
 |---|---:|---:|---:|---:|
-| `SecurityConfigurationTest` | 5 | 0 | 0 | 0 |
-| `HealthControllerTest` | 1 | 0 | 0 | 0 |
-| `HealthControllerWebTest` | 1 | 0 | 0 | 0 |
+| SecurityConfigurationTest | 5 | 0 | 0 | 0 |
+| HealthControllerTest | 1 | 0 | 0 | 0 |
+| HealthControllerWebTest | 1 | 0 | 0 | 0 |
 | **Total** | **7** | **0** | **0** | **0** |
 
 | Métrica JaCoCo | Cubierto | No cubierto | Total | Cobertura |
@@ -88,24 +103,32 @@ El [inventario completo](images/README.md) especifica el contenido comprobable d
 | METHOD | 10 | 1 | 11 | 90,91 % |
 | CLASS | 4 | 0 | 4 | 100 % |
 
-Los totales XML coinciden con el HTML: 2 líneas sin cubrir de 19 y 5 instrucciones sin cubrir de 87. El HTML redondea instrucciones a 94 %. No hay contador de ramas ni regla de cobertura mínima configurada. No se afirma cobertura de negocio, autenticación JWT o acceso Atlas.
+Se inspeccionaron `target/site/jacoco/jacoco.xml` y los tres XML Surefire actuales. Los totales coinciden con E02. No hay cobertura de ramas ni umbral mínimo configurado. Las pruebas no ejecutan consultas Atlas ni verifican JWT completo o negocio. Los avisos Mockito/Byte Buddy y Springdoc no causaron fallos.
 
-Avisos observados: carga dinámica de Mockito/Byte Buddy en Java 21 y endpoints Springdoc habilitados. No causaron fallos. Swagger público corresponde al requisito del servicio inicial.
+**Validación documental final:** controles completados sin errores:
 
-`git diff --check`: salida 0, sin errores de whitespace; solo advertencia informativa de conversión futura LF/CRLF en README. `git status` confirma únicamente los tres documentos indicados y ningún cambio en staging. Los tres documentos se revisaron también: cero espacios finales y cero enlaces locales rotos, incluidos los archivos sin seguimiento que `git diff --check` no evalúa. Se comprobaron las 11 secciones numeradas y los `.gitkeep` previstos, sin faltantes. El diff de Java, pruebas, POM, configuración, Docker y workflow respecto de HEAD está vacío: las modificaciones documentales no alteran lo validado por Maven. Los reportes locales enlazados requieren ejecutar Maven en un clon nuevo.
+- **72 referencias locales** comprobadas: README 31, inventario 11 y reporte 30. Se verificaron existencia, seguimiento en Git y anclas de destino; ningún enlace local roto, ninguna ruta a imágenes excluidas ni a artefactos ignorados. Las imágenes y documentos estarán disponibles en GitHub después de la incorporación y publicación manual autorizada por el estudiante.
+- **20 referencias HTTP(S)** documentadas: README 8, inventario 5 y reporte 7. APIs públicas de Actions/Docker Hub consultadas exitosamente; URLs Azure conservadas del contexto del estudiante, sin afirmar comprobación HTTP actual de cada enlace remoto.
+- README con **11 secciones principales en orden**, índice válido y **nueve imágenes distintas**, cada una insertada una sola vez. Las nueve rutas corresponden a imágenes existentes y preparadas desde antes de esta tarea.
+- **11 PNG íntegros:** firmas, dimensiones y CRC de todos los chunks correctos; sin bytes extra tras IEND, sin metadatos textuales/EXIF y sin hashes duplicados. Tamaño máximo 213551 bytes; total 1228299 bytes. Todos se visualizaron y sus bytes originales se conservaron.
+- Escaneo de patrones de secretos en los tres documentos: sin coincidencias de URI MongoDB autenticada, claves privadas o tokens reconocibles; revisión visual de las nueve imágenes aprobadas sin credenciales visibles. Los dos originales privados están fuera del índice y `git check-ignore -v` confirma sus exclusiones locales.
+- `git diff --check` y `git diff --cached --check`: **salida 0**, sin errores de whitespace. Solo avisos informativos de conversión futura LF/CRLF.
+- `git status`: tres documentos modificados sin preparar y nueve PNG ya preparados. `git diff --stat`: únicamente los tres Markdown; `git diff HEAD --stat`: esos documentos y las nueve imágenes. Diff de implementación respecto de HEAD vacío; develop, HEAD y main preservados. SHA256 del índice coincide con el registrado tras retirar las dos imágenes privadas.
+
+El validador temporal se ejecutó con Node y se eliminó; Python no está instalado en este equipo. No se añadieron herramientas ni dependencias al proyecto.
 
 ## Tabla de cumplimiento
 
-Estados utilizados exactamente como solicita la auditoría:
+Se mantienen las 65 entradas de la auditoría previa. Las comprobaciones de archivos y estructura se conservan como antecedentes cuando no requieren una nueva ejecución. Los cambios de clasificación provienen de E04/E05/E08/E09/E11 y las APIs públicas. Ningún estado implica JWT/negocio implementados ni operaciones autenticadas Atlas.
 
-- **Cumplido y verificado**: comprobado en archivos locales, referencias Git o ejecución técnica actual; datos del estudiante respaldados por su confirmación explícita.
-- **Implementado pero pendiente de evidencia**: implementación o resultado existente y confirmado, con evidencia de entrega aún ausente.
-- **Pendiente de intervención manual**: acción concreta del estudiante necesaria.
-- **No verificado**: no hay comprobación suficiente para afirmar cumplimiento.
+- **Cumplido y verificado:** respaldo verificable en archivos, ejecución local, captura inspeccionada o API pública, dentro del alcance expresamente indicado.
+- **Implementado pero pendiente de evidencia:** resultado aportado o parcial, sin evidencia publicable suficiente para el requisito completo.
+- **Pendiente de intervención manual:** acción necesaria del estudiante; no se presenta como realizada.
+- **No verificado:** no hay respaldo suficiente para afirmar cumplimiento.
 
-Los IDs de captura remiten al [inventario](images/README.md) y siempre representan imágenes pendientes. La columna HTML indica la sección del profesor; las filas desglosan sus requisitos y observaciones relevantes.
+E01–E12 remiten al inventario actual; pueden representar imágenes integradas, parciales, excluidas o ausentes.
 
-Resumen de las **65 entradas** de la tabla: **40 Cumplido y verificado**, **12 Implementado pero pendiente de evidencia**, **6 Pendiente de intervención manual** y **7 No verificado**. El desglose incluye comprobaciones complementarias y el alcance del laboratorio posterior; no representa una nota o porcentaje de aprobación del profesor.
+Resumen de **65 entradas**: **45 Cumplido y verificado**, **8 Implementado pero pendiente de evidencia**, **6 Pendiente de intervención manual**, **6 No verificado**. No constituye nota ni porcentaje de aprobación.
 
 | HTML | Requisito | Clasificación | Evidencia / límite / pendiente |
 |---|---|---|---|
@@ -132,7 +155,7 @@ Resumen de las **65 entradas** de la tabla: **40 Cumplido y verificado**, **12 I
 | 3 | Soporte SLF4J y `@Slf4j` | Cumplido y verificado | Logging de Spring Boot y Lombok disponibles; no se afirma uso de `@Slf4j` en clases de negocio |
 | 3 | JUnit, Mockito y security-test | Cumplido y verificado | Dependencias de test y 7 pruebas ejecutadas |
 | 3 | Plugin Spring Boot y compilador Java 21 | Cumplido y verificado | POM, compilación release 21 y JAR ejecutable generado |
-| 3 | JaCoCo prepare-agent/report | Cumplido y verificado | POM, ejecución Maven, HTML/XML y métricas; captura E02 pendiente |
+| 3 | JaCoCo prepare-agent/report | Cumplido y verificado | POM, Maven actual, HTML/XML y captura E02 integrada; 89,47 % LINE, 94,25 % INSTRUCTION |
 | 3 | SonarScanner y propiedades `sonar.*` | Cumplido y verificado | POM. El HTML exige preparación; no hay evidencia de análisis SonarQube ejecutado |
 | 3 | Verificar en Maven Central la versión estable más reciente compatible | No verificado | Build confirma compatibilidad actual; no se contrastó la última versión publicada de cada dependencia/plugin |
 | 4 | Único archivo YAML/properties, nombre y puerto por variable | Cumplido y verificado | [application.yaml](../src/main/resources/application.yaml): nombre DOSW-ParcialT2, `PORT` con default 8080 |
@@ -146,61 +169,78 @@ Resumen de las **65 entradas** de la tabla: **40 Cumplido y verificado**, **12 I
 | 5 | Dockerfile multietapa Java 21, JRE final y puerto 8080 | Cumplido y verificado | [Dockerfile](../Dockerfile), builder ejecuta verify sin omitir pruebas |
 | 5 | `.dockerignore` excluye Git, target, docs, entornos y claves | Cumplido y verificado | [.dockerignore](../.dockerignore) |
 | 5, 10 | `docker build` termina sin errores | Implementado pero pendiente de evidencia | Confirmación del estudiante y auditoría histórica; E03/captura o log del build pendiente; no se reconstruyó aquí |
-| 5, 10 | Contenedor arranca y health local responde HTTP 200 | Implementado pero pendiente de evidencia | Antecedente local con puerto host 8081 → 8080 y resultado confirmado; E03 pendiente |
+| 5, 10 | Contenedor arranca y health local responde HTTP 200 | Implementado pero pendiente de evidencia | E03 integrada: contenedor activo y 8081:8080, nombres/tag truncados. Health local 200 solo en antecedente; falta captura HTTP completa |
 | 6 | Workflow main/develop con test → docker → deploy condicionado | Cumplido y verificado | [ci-cd.yml](../.github/workflows/ci-cd.yml), dependencias `needs`, condiciones y etapas activas |
 | 6 | Publicación Docker Hub y despliegue de la etiqueta entregada por docker | Cumplido y verificado | Pasos del workflow, output `image_tag`, alias por rama; verificación de implementación |
-| 6 | Pipeline completo verde en develop | Implementado pero pendiente de evidencia | Estudiante confirmó test/docker/deploy_develop exitosos y deploy_main omitido; E05 y enlace/SHA pendientes |
-| 6 | Imagen efectivamente publicada en Docker Hub | Implementado pero pendiente de evidencia | Confirmación del estudiante; E04, URL, propietario, etiqueta y digest pendientes |
-| 6 | Secrets de Docker Hub/Azure y destino configurados | Implementado pero pendiente de evidencia | Pipeline exitoso aportado implica credenciales operativas para esa ejecución; ubicación, permisos y valores no inspeccionados |
+| 6 | Pipeline completo verde en develop | Cumplido y verificado | E05 y API del run 38341584719, intento 4: test/docker/deploy_develop success, deploy_main skipped; SHA 80cc2b1, anterior al HEAD documental |
+| 6 | Imagen efectivamente publicada en Docker Hub | Cumplido y verificado | E04, repositorio público danielvalero09/dosw-parcial-t2 y API: etiqueta única del run/intento 4 y digest completos registrados |
+| 6 | Secrets de Docker Hub/Azure y destino configurados | Implementado pero pendiente de evidencia | Jobs docker/deploy_develop exitosos verificados por API; implican credenciales operativas en esa ejecución, pero ubicación, permisos y settings no inspeccionados |
 | 6 | Pruebas CI no dependen de operaciones MongoDB ni secretos productivos JWT | Cumplido y verificado | Pruebas usan URI local de test y marcador de JWT; no consultan la base, workflow ejecuta todas |
 | 6 | Restricciones de entornos y permisos mínimos de Service Principal | No verificado | Se declaran staging/production; no se inspeccionaron branch rules ni asignaciones de permisos remotos |
-| 7 | App Service Linux por contenedor en Azure | Implementado pero pendiente de evidencia | App `dosw-parcialt2-daniel-dev`, West US, confirmada; E06/E07 y evidencia de recurso pendientes |
-| 7 | Imagen consumida por Azure | Implementado pero pendiente de evidencia | Deploy develop exitoso confirmado; etiqueta única implementada. No se inspeccionó digest del contenedor activo |
+| 7 | App Service Linux por contenedor en Azure | Implementado pero pendiente de evidencia | E12 revisada: Linux, West US y contenedor. Captura excluida por identificador privado de suscripción; falta evidencia publicable |
+| 7 | Imagen consumida por Azure | Implementado pero pendiente de evidencia | deploy_develop success por API y etiqueta publicada corroborada; digest del contenedor activo Azure no inspeccionado |
 | 7 | Variables Azure MONGODB_URI, JWT_SECRET, WEBSITES_PORT=8080 | No verificado | No se inspeccionaron settings reales, longitud de JWT ni modelo de enrutamiento; app responde pero no prueba los tres valores |
-| 7 | Service Principal y secret AZURE_CREDENTIALS operativo | Implementado pero pendiente de evidencia | Login/deploy exitosos aportados; falta evidencia sin secretos, sin afirmar roles específicos |
-| 7 | Base gestionada accesible desde Azure | Implementado pero pendiente de evidencia | Atlas DOSW-ParcialT2 y logs de conexiones al primario/2 secundarios confirmados; E08/E09 pendientes, alcance de monitoreo |
+| 7 | Service Principal y secret AZURE_CREDENTIALS operativo | Implementado pero pendiente de evidencia | deploy_develop success en captura/API; no se inspeccionaron login detallado ni permisos del Service Principal |
+| 7 | Base gestionada accesible desde Azure | Cumplido y verificado | E08/E09 integradas: Atlas y conexiones del monitor al primario y dos secundarios. Verificado solo el alcance de monitoreo, no lectura/escritura autenticada |
 | 7 | Ping o lectura autenticada de Atlas desde Azure | No verificado | Aún no se comprobó; los logs del driver y health no acreditan esta operación |
-| 7 | Push previo a develop con ejecución verde | Implementado pero pendiente de evidencia | Contexto del estudiante y origin/develop local coincidente; falta URL/evento/SHA de ejecución E05 |
-| 7 | Health público Azure HTTP 200 | Implementado pero pendiente de evidencia | [Health Azure](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/api/v1/health), JSON confirmado; E06 pendiente |
-| 7 | Swagger público Azure cargado | Implementado pero pendiente de evidencia | [Swagger Azure](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/swagger-ui/index.html), abierto por estudiante; E07 pendiente |
+| 7 | Push previo a develop con ejecución verde | Cumplido y verificado | E05/API: evento push, rama develop, SHA 80cc2b1036b5e18819a37b54c3f711c75b6bf651, run 38341584719, intento 4; enlace y fecha registrados |
+| 7 | Health público Azure HTTP 200 | Implementado pero pendiente de evidencia | Dominio y resultado aportados por el estudiante. E06 ausente; E07 muestra 200/JSON sin dominio ni endpoint: respaldo parcial, no origen Azure verificable |
+| 7 | Swagger público Azure cargado | Implementado pero pendiente de evidencia | URL aportada por el estudiante. E07 es solo un recorte de respuesta; falta UI completa con dominio y endpoint visibles |
 | 7 | Suscripción, costos y cuotas suficientes | No verificado | Servicio confirmado operativo; no se revisaron plan, saldo, vigencia ni cuotas |
 | 7 | Despliegue y configuración remota de main/production | No verificado | Workflow implementado; deploy_main se omitió correctamente en develop. No se ejecutó ni se exige como nueva operación aquí |
 | 8 | README con índice y exactamente 11 secciones numeradas | Cumplido y verificado | [README](../README.md), secciones preservadas, enlaces y contenido revisados |
 | 8 | Datos, descripción, URLs reales, estructura y tecnologías | Cumplido y verificado | README §§1–5; grupo confirmado, profesor marcado pendiente |
 | 8 | Variables sin valores reales y comandos Maven/Docker/Mongo | Cumplido y verificado | README §§6–9; `mvn test`, `clean verify`, build/run y Mongo local documentados |
 | 8 | Pipeline y nombres de secrets documentados | Cumplido y verificado | README §10; sin afirmar éxito de main o comprobar valores privados |
-| 8, 10 | Capturas Maven, JaCoCo, Docker, Actions, health y Swagger en README | Pendiente de intervención manual | No existen imágenes; incorporar E01–E07 auténticas y enlazarlas después de verificarlas |
-| 9 | Seleccionar UML y garantizar cuenta requerida | Pendiente de intervención manual | Confirmar Lucidchart/Draw.io/Miro y acceso real; E10 pendiente |
-| 9 | Cuenta y acceso Figma disponibles | No verificado | Figma indicada como herramienta, sin confirmación de acceso; E11 pendiente |
-| 9, 10 | Evidencias de acceso UML/Figma enlazadas en README | Pendiente de intervención manual | Capturar E10/E11 reales y agregar referencias Markdown solo cuando existan |
-| 10 | Entrega completa con profesor y evidencias | Pendiente de intervención manual | Base técnica funcional; faltan colaborador, capturas y comprobaciones expresamente pendientes |
+| 8, 10 | Capturas Maven, JaCoCo, Docker, Actions, health y Swagger en README | Pendiente de intervención manual | E01/E02/E03/E04/E05/E07 integradas; E03/E07 parciales, E06 ausente. Faltan vistas completas de health/Swagger y Docker local |
+| 9 | Seleccionar UML y garantizar cuenta requerida | Pendiente de intervención manual | E10 integrada: Draw.io/app.diagrams.net abierto. Selección y acceso al editor verificados; cuenta autenticada no demostrada si se exige |
+| 9 | Cuenta y acceso Figma disponibles | Cumplido y verificado | E11 revisada: sesión de Daniel Valero y archivos recientes. Acceso observado; captura excluida por correo personal y evidencia publicable pendiente |
+| 9, 10 | Evidencias de acceso UML/Figma enlazadas en README | Pendiente de intervención manual | UML E10 enlazada; Figma E11 excluida de publicación por correo personal. Requiere saneamiento y autorización |
+| 10 | Entrega completa con profesor y evidencias | Pendiente de intervención manual | Nueve capturas integradas; dos excluidas, health/Swagger completos y profesor como colaborador pendientes; límites técnicos indicados |
 
-La preparación de JWT/negocio y la comprobación de `main/production` se incluyen para impedir afirmaciones de completitud indebidas; no se convierten en funcionalidades nuevas del alcance actual. El health de la aplicación devuelve un mapa fijo y no prueba la base. El ping documentado en la auditoría histórica fue contra MongoDB local y tampoco acredita Atlas desde Azure.
+La conexión de monitoreo del driver y el health fijo no acreditan una operación autenticada contra Atlas. El ping histórico fue contra MongoDB local. Producción/main y JWT/negocio siguen fuera del trabajo actual.
 
-## Revisión de secretos
+## Revisión de privacidad y secretos
 
-Se revisó la lista de archivos versionados, la configuración y las coincidencias de patrones de URI MongoDB con usuario/contraseña, claves privadas, tokens GitHub/Docker Hub/AWS, JWT y literales de credenciales Azure. No se detectaron credenciales reales en los archivos revisados. `.env.example` contiene un marcador JWT y una URI local; los tests contienen un marcador exclusivo de pruebas.
+Se visualizaron las 11 imágenes. No se observaron contraseñas, tokens, claves privadas o URI MongoDB con credenciales. Se encontraron datos privados en **dos**: identificador de suscripción en E12 y correo personal en E11. No se reproducen sus valores en la documentación ni se enlazan los originales. Ambas rutas están fuera del índice y excluidas localmente; los bytes originales se conservaron.
 
-No se versionan `.env` reales, certificados/claves ni archivos de credenciales Azure/MongoDB identificados. Se comprobó que `.env`, `.env.local`, `.env.production`, `*.p12`, `*.pem`, `*.key`, `*.jks`, `*.pfx`, `azure-credentials.json`, `service-principal.json` y el reporte bajo `target/` son ignorados. `.env.example` es la excepción intencional.
+Las nueve imágenes aprobadas incluyen contexto técnico (rutas del proyecto, nombres de contenedores, hostnames de Atlas, metadatos de topología) sin credenciales visibles. Se comprobaron además los chunks PNG: no contienen metadatos textuales ni EXIF. El escaneo de documentos no detectó patrones de secretos; no se volcaron variables de entorno o configuración privada remota. Estas comprobaciones no demuestran ausencia absoluta de secretos arbitrarios.
 
-La revisión inicial produjo una coincidencia amplia en el README por un ejemplo de generación de JWT con OpenSSL, revisado como código de ejemplo, no un secreto literal. No se imprimieron valores de entorno, credenciales ni URIs autenticadas. Solo se documentan la URL pública, el nombre del App Service y el nombre del clúster proporcionados por el estudiante; no se incorporan subscriptionId, tenantId, clientId, contraseñas ni cadenas privadas.
+La auditoría anterior registró revisión de configuración e ignores sin detectar credenciales reales; ese antecedente no se presenta como un nuevo escaneo de toda la historia Git. No se rotaron credenciales ni se inspeccionaron objetos Git inaccesibles.
 
-El escaneo final de patrones conocidos sobre los 45 archivos rastreados y los dos documentos nuevos produjo cero coincidencias. Se revisaron además los tres commits accesibles mediante búsqueda de nombres de archivos con patrones de URI autenticada, claves privadas y tokens reconocibles: cero coincidencias. El único archivo local con nombre `.env*` es `.env.example`. Esta revisión no incluyó objetos Git inaccesibles ni ramas remotas no disponibles localmente.
+## Acciones manuales pendientes
 
-Esta revisión por patrones y lectura no demuestra ausencia absoluta de secretos arbitrarios ni inspecciona la configuración privada remota. No se afirma que tokens o credenciales externas hayan sido rotados o revocados.
+1. **Invitar al profesor y confirmar aceptación/acceso efectivo**. Su estado permanece pendiente.
+2. Sanear las capturas App Service/Figma y autorizar su publicación antes de incorporar versiones sin datos privados. Mantener los originales excluidos y no forzar su incorporación a Git.
+3. Aportar captura completa del health Azure (dominio, GET /api/v1/health, 200 y JSON) y de Swagger UI (URL y endpoint). El recorte E07 no completa estos requisitos.
+4. Ampliar Docker local: nombre e imagen completos, puertos, estado activo, health HTTP 200 y evidencia del build local. La captura E03 sí existe, pero su alcance es parcial.
+5. Verificar una operación autenticada no destructiva contra Atlas desde Azure con evidencia independiente y sin revelar la URI. No se ejecutó aquí.
+6. Confirmar variables Azure, formato/longitud JWT, puertos, permisos y restricciones de staging sin copiar valores privados. El acceso observado a Figma no demuestra un prototipo terminado; Draw.io no acredita cuenta autenticada si el profesor la exige.
+7. Conservar los pendientes anteriores de contraste de versiones estables compatibles en Maven Central y revisión de suscripción/costos/cuotas. No se actualizan dependencias ni recursos durante esta tarea.
 
-## Acciones manuales pendientes del estudiante
+El grupo **ya está confirmado: Grupo 1**. Enlace/fecha/SHA de Actions y propietario/URL/etiqueta/digest Docker Hub quedaron registrados con certeza; no permanecen como pendientes. JWT completo y negocio corresponden al laboratorio posterior, sin implementarse en esta intervención.
 
-1. Invitar al profesor como colaborador y confirmar aceptación/acceso. Mantener el estado pendiente hasta contar con esa confirmación.
-2. Incorporar las 11 capturas auténticas E01–E11 conforme al [inventario](images/README.md); ocultar secretos conservando el contexto verificable y enlazar únicamente los archivos existentes.
-3. Registrar URL, fecha, evento y SHA de la ejecución verde de Actions; URL/propietario/etiqueta/digest de Docker Hub. Vincular esa imagen con la ejecución y el despliegue sin inventar identificadores.
-4. Confirmar las variables requeridas en Azure sin copiar sus valores privados al repositorio: URI Atlas por entorno, JWT Base64 de mínimo 32 bytes y puerto 8080 según el modelo de App Service. Verificar permisos y restricciones de staging sin modificarlos durante esta auditoría.
-5. Comprobar desde Azure un ping o lectura autenticada no destructiva usando la misma URI de entorno y registrar el resultado sin revelar credenciales. Es una comprobación pendiente; no se ejecutó aquí ni se sustituyó por health o logs de monitoreo.
-6. Confirmar la herramienta UML y el acceso a su cuenta, y verificar acceso a Figma. Sus cuentas no se dan por existentes solo por figurar en el README.
-7. Contrastar en Maven Central las versiones estables compatibles indicadas por el HTML; no actualizar dependencias como parte de esta tarea documental. Revisar suscripción/costos/cuotas antes del laboratorio.
+## Archivos exactos recomendados para el siguiente commit
 
-El grupo académico **ya está resuelto**: Grupo 1. JWT completo y negocio quedan reservados al laboratorio posterior. La configuración de producción se documenta como no verificada, sin solicitar ahora acciones sobre `main`.
+Únicamente estos **12 archivos**, después de revisar la documentación; esta lista no ejecuta incorporación al índice ni commit:
+
+```text
+README.md
+docs/images/README.md
+docs/reporte-final-prerrequisitos.md
+docs/images/azure-mongodb-connection.png
+docs/images/azure-swagger.png
+docs/images/docker-container-running.png
+docs/images/dockerhub-image.png
+docs/images/github-actions-success.png
+docs/images/jacoco-cobertura.png
+docs/images/maven-build-success.png
+docs/images/mongodb-atlas-cluster.png
+docs/images/uml-herramienta.png
+```
+
+Excluir `docs/images/azure-app-service.png` y `docs/images/figma-cuenta.png` hasta saneamiento y autorización. `.git/info/exclude` es protección local y no forma parte del commit; `target/` contiene generados ignorados. `.gitkeep` ya existe y no cambió.
 
 ## Restricciones respetadas
 
-**No se ejecutó `git add`, `git commit`, `git push` ni `git merge`.** No se modificó `main`, no se crearon Pull Requests, no se desplegó en Azure, no se publicaron imágenes Docker ni se modificaron recursos remotos. No se generaron capturas falsas, sintéticas o simuladas. Se conservaron HEAD y archivos de implementación; la entrega queda con cambios exclusivamente documentales para revisión del estudiante.
+**No se ejecutó git add, git commit, git push ni git merge.** No se cambió de rama o HEAD, no se modificó main, no se desplegó, no se publicó Docker ni se alteraron recursos externos u otros proyectos. Se actualizaron tres documentos y dos exclusiones locales; se retiraron las dos capturas privadas del índice sin alterar las imágenes. Ningún archivo de implementación cambió. No se inventó, simuló o generó ninguna captura.
