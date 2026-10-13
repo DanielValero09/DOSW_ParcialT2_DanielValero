@@ -1,10 +1,13 @@
 # DOSW_ParcialT2_DanielValero
 
-Proyecto individual para el **Parcial Práctico del Segundo Tercio – DOSW**, basado en el documento **Parte 1.1 · Prerrequisitos**.
+Proyecto individual para el **Parcial Práctico del Segundo Tercio — DOSW**, basado en **Parte 1.1 · Prerrequisitos**.
 
-> **Estado actual:** scaffolding MVC, dependencias, configuración y automatización preparadas. La autenticación JWT y la lógica de negocio se implementarán en el laboratorio. El despliegue, la ejecución del pipeline y las evidencias deben verificarse en cuentas reales; no se declaran completados sin pruebas.
+> **Estado actual:** proyecto base MVC operativo localmente y desplegado en Azure. El estudiante confirmó el pipeline exitoso en `develop`, la publicación en Docker Hub y el acceso público a health y Swagger. La auditoría local del 12 de octubre de 2026 confirmó Maven y JaCoCo. La autenticación JWT completa y la lógica de negocio corresponden al laboratorio posterior. Las capturas auténticas todavía no están incorporadas al repositorio.
+
+La [auditoría final](docs/reporte-final-prerrequisitos.md) distingue comprobaciones locales, resultados remotos aportados por el estudiante y pendientes. El [inventario de evidencias](docs/images/README.md) define los nombres sugeridos; no contiene imágenes simuladas.
 
 ## Índice
+
 1. [Datos del estudiante](#1-datos-del-estudiante)
 2. [Descripción del proyecto](#2-descripción-del-proyecto)
 3. [Despliegue](#3-despliegue)
@@ -22,52 +25,62 @@ Proyecto individual para el **Parcial Práctico del Segundo Tercio – DOSW**, b
 | Campo | Información |
 |---|---|
 | Nombre completo | Daniel Valero Quiroga |
-| Grupo de DOSW | **PENDIENTE: registrar el grupo real** |
+| Grupo de DOSW | **Grupo 1**, confirmado por el estudiante |
 | Institución | Escuela Colombiana de Ingeniería Julio Garavito |
 | Trabajo | Individual |
-| Profesor como colaborador | **PENDIENTE: agregar desde Settings → Collaborators** |
-| Repositorio | `DOSW_ParcialT2_DanielValero` |
-| Ramas | `main` y `develop` existentes; trabajo local en `develop` |
+| Profesor como colaborador | **Pendiente de agregar**; no existe confirmación de acceso |
+| Repositorio | [DOSW_ParcialT2_DanielValero](https://github.com/DanielValero09/DOSW_ParcialT2_DanielValero) |
+| Ramas | `main` y `develop` comprobadas localmente; revisión en `develop` |
 
 ## 2. Descripción del proyecto
 
-Servicio REST base desarrollado con Java 21 y Spring Boot, organizado siguiendo la separación MVC por capas de controller, core y persistence. Prepara el acceso configurable a MongoDB, dependencias para seguridad con JWT, documentación Swagger y calidad con JUnit, Mockito, JaCoCo y SonarQube. La aplicación expone únicamente un endpoint de salud para comprobar el arranque y permitir un despliegue inicial verificable. La lógica de negocio del parcial se construirá posteriormente.
-
-**Endpoints iniciales:**
+Servicio REST base desarrollado con Java 21 y Spring Boot, separado en las capas controller, core y persistence.
+Prepara el acceso configurable a MongoDB, las dependencias para JWT, Swagger y las herramientas de pruebas y cobertura.
+Expone un endpoint público de salud para comprobar que el servicio responde y permitir el despliegue inicial.
+La autenticación JWT completa, los roles y la lógica de negocio se implementarán durante el laboratorio posterior.
 
 | Recurso | Ruta | Acceso |
 |---|---|---|
-| Estado de servicio | `GET /api/v1/health` | Público |
+| Estado del servicio | `GET /api/v1/health` | Público |
 | Swagger UI | `/swagger-ui/index.html` | Público |
-| Especificación OpenAPI | `/v3/api-docs` | Público |
+| Especificación OpenAPI | `/v3/api-docs` y `/v3/api-docs.yaml` | Público |
 
-La presencia de JJWT y Spring Security **no implica que exista un login JWT funcional**: se implementará en el laboratorio. Cualquier otra ruta requiere autenticación, pero aún no existe un mecanismo JWT de autenticación.
+Spring Security usa sesiones `STATELESS` y exige autenticación en las demás rutas. Las dependencias JJWT y la configuración `JWT_SECRET` no acreditan un login JWT funcional. El health devuelve un estado fijo del servicio; no consulta MongoDB.
 
 ## 3. Despliegue
 
 | Recurso | URL / estado |
 |---|---|
-| App Service de Azure | **PENDIENTE: pegar URL real** |
-| Health público | **PENDIENTE: registrar URL real y comprobar HTTP 200** |
-| Swagger público | **PENDIENTE: registrar URL real y comprobar acceso público** |
-| Docker Hub | **PENDIENTE: registrar URL real de la imagen publicada** |
+| Servicio Azure | [Abrir aplicación](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net) |
+| Health público | [GET /api/v1/health](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/api/v1/health) |
+| Swagger público | [Swagger UI](https://dosw-parcialt2-daniel-dev-hge6d7ghd4eab8ar.westus-01.azurewebsites.net/swagger-ui/index.html) |
+| Docker Hub | Imagen publicada por el pipeline, confirmado por el estudiante; URL, propietario y etiqueta exacta pendientes de incorporar con evidencia |
 
-La publicación depende de disponer de suscripción Azure, registro de imágenes y credenciales externas. No se ha realizado durante la preparación de esta plantilla.
+App Service confirmado: **`dosw-parcialt2-daniel-dev`**, Linux, región **West US**. El estudiante abrió Swagger públicamente y ejecutó el health desde Swagger con **HTTP 200** y respuesta:
+
+```json
+{"status":"UP","service":"DOSW-ParcialT2"}
+```
+
+MongoDB Atlas: clúster **DOSW-ParcialT2**. Según los registros revisados por el estudiante, el driver desde Azure establece conexiones de monitoreo con el nodo primario y dos secundarios. **No se ha verificado un ping o una lectura autenticada desde Azure**. Ni esos logs ni el HTTP 200 de health prueban esa operación.
+
+Estos resultados remotos provienen del contexto confirmado por el estudiante; no se repitieron ni se realizó un nuevo despliegue durante esta auditoría. Faltan las capturas enumeradas en el [inventario](docs/images/README.md).
 
 ## 4. Estructura del proyecto
 
 ```text
 DOSW_ParcialT2_DanielValero/
 ├── docs/
-│   ├── uml/                      Diagramas fuente
-│   └── images/                   Capturas, exportes y evidencias
+│   ├── uml/                         Diagramas fuente (.gitkeep)
+│   ├── images/                      Inventario y futuras capturas auténticas
+│   ├── auditoria-primer-commit.md   Antecedente histórico del 10 de octubre
+│   └── reporte-final-prerrequisitos.md
 ├── src/
 │   ├── main/
 │   │   ├── java/edu/dosw/parcial/
 │   │   │   ├── controller/
-│   │   │   │   ├── dtos/
-│   │   │   │   │   ├── request/
-│   │   │   │   │   └── response/
+│   │   │   │   ├── dtos/request/
+│   │   │   │   ├── dtos/response/
 │   │   │   │   ├── mappers/
 │   │   │   │   └── handlers/
 │   │   │   ├── core/
@@ -84,9 +97,9 @@ DOSW_ParcialT2_DanielValero/
 │   │   └── resources/application.yaml
 │   └── test/
 │       ├── java/edu/dosw/parcial/
-│       │   ├── controller/
-│       │   ├── core/
-│       │   ├── persistence/
+│       │   ├── controller/           Replica DTOs, mappers y handlers
+│       │   ├── core/                 Replica services, models, validators y utils
+│       │   ├── persistence/          Replica entities, repositories y mappers
 │       │   ├── config/
 │       │   └── main/
 │       └── resources/
@@ -99,167 +112,176 @@ DOSW_ParcialT2_DanielValero/
 └── README.md
 ```
 
-**Responsabilidades:** `controller/` recibe solicitudes HTTP y produce DTOs; `controller/dtos/request/` define entradas; `controller/dtos/response/` define salidas; `controller/mappers/` traduce entre DTOs y dominio (Mapper IN); `controller/handlers/` maneja excepciones HTTP. `core/models/` contiene objetos de dominio; `core/services/` contiene casos de uso; `core/validators/` agrupa reglas de negocio y `core/utils/` utilidades. `persistence/entities/` contiene documentos anotados `@Document`; `persistence/repositories/` contiene interfaces `MongoRepository`; `persistence/mappers/` traduce dominio y documento (Mapper OUT). `config/` aloja configuración de seguridad y Swagger; `main/` contiene el arranque con escaneo desde `edu.dosw.parcial`. La estructura de `src/test/` permite pruebas separadas por capa.
+| Paquete | Responsabilidad prevista |
+|---|---|
+| `controller/` | Recibir HTTP y producir DTOs; contiene el health inicial |
+| `controller/dtos/request/` | Entradas de la API |
+| `controller/dtos/response/` | Salidas de la API |
+| `controller/mappers/` | Mapper IN: DTO ↔ dominio |
+| `controller/handlers/` | Tratamiento de excepciones HTTP |
+| `core/models/` | Objetos de dominio |
+| `core/services/` | Casos de uso |
+| `core/validators/` | Reglas de negocio |
+| `core/utils/` | Utilidades |
+| `persistence/entities/` | Documentos MongoDB futuros con `@Document` |
+| `persistence/repositories/` | Interfaces `MongoRepository` futuras |
+| `persistence/mappers/` | Mapper OUT: dominio ↔ documento |
+| `config/` | Seguridad inicial y OpenAPI |
+| `main/` | Arranque con escaneo explícito de `edu.dosw.parcial` y repositorios |
+| `src/test/` | Pruebas organizadas por capa |
 
-> Las carpetas sin código tienen `.gitkeep`, porque Git no guarda directorios vacíos. No crear entidades del dominio antes de conocer el enunciado del laboratorio.
-
-Los paquetes de pruebas replican los subpaquetes de `controller`, `core` y `persistence`, además de `config` y `main`.
+Las carpetas vacías están conservadas mediante `.gitkeep`. Las responsabilidades de negocio son previstas: no existen todavía entidades, repositorios o mappers de negocio. El Controller no debe depender de documentos de persistencia y el Service no debe depender de DTOs.
 
 ## 5. Tecnologías y dependencias
 
-| Tecnología | Versión de referencia | Uso |
+| Tecnología | Versión configurada / referencia | Uso |
 |---|---|---|
 | Java | 21 | Lenguaje y runtime |
 | Spring Boot | 3.5.16 | Aplicación web |
 | Spring Web | Administrada por Spring Boot | REST HTTP |
-| Spring Data MongoDB | Administrada por Spring Boot | Persistencia documental |
+| Spring Data MongoDB | Administrada por Spring Boot | Persistencia documental; sin JPA |
 | Spring Validation | Administrada por Spring Boot | Validación de DTOs |
-| Spring Security | Administrada por Spring Boot | Seguridad base |
-| JJWT | 0.13.0 | JWT en el laboratorio |
+| Spring Security | Administrada por Spring Boot | Seguridad inicial |
+| JJWT | 0.13.0 | Dependencias JWT para el laboratorio |
 | springdoc | 2.8.16 | OpenAPI y Swagger |
-| Lombok | Administrada por Spring Boot | Código repetitivo y `@Slf4j` |
+| Lombok | Administrada por Spring Boot | Código repetitivo y soporte de `@Slf4j` |
 | MapStruct | 1.6.3 | Generación de mappers |
-| JUnit 5 y Mockito | Administradas por Spring Boot | Pruebas unitarias |
+| lombok-mapstruct-binding | 0.2.0 | Integración de procesadores de anotaciones |
+| JUnit 5 y Mockito | Administradas por Spring Boot | Pruebas |
 | JaCoCo | 0.8.15 | Cobertura |
-| SonarScanner Maven | 5.2.0.4988 | Análisis estático |
+| SonarScanner Maven | 5.2.0.4988 | Plugin y propiedades de análisis estático |
 | Maven | 3.9.x recomendado | Construcción |
-| Docker | Compatible con multietapa | Empaquetado |
+| Docker | Multietapa con Java 21 | Empaquetado |
 | GitHub Actions | `ubuntu-latest` | CI/CD |
-| Azure App Service | Contenedor Linux | Hosting |
+| Azure App Service | Contenedor Linux, West US | Hosting |
+| MongoDB Atlas | Clúster DOSW-ParcialT2 | Base gestionada |
+
+El POM configura los procesadores en el orden Lombok → lombok-mapstruct-binding → MapStruct, los goals JaCoCo `prepare-agent` y `report`, y las propiedades `sonar.*`. La compilación y las pruebas acreditan compatibilidad del proyecto base; esta auditoría no confirma que cada versión sea la estable más reciente ni que se haya ejecutado un análisis SonarQube.
 
 ## 6. Configuración y variables de entorno
 
-| Variable | Descripción | Ejemplo NO secreto |
+| Variable | Descripción | Ejemplo sin secretos |
 |---|---|---|
-| `MONGODB_URI` | URI de MongoDB; predeterminado local | `mongodb://localhost:27017/dosw_parcial` |
-| `JWT_SECRET` | Clave JWT Base64 aleatoria de 32 bytes o más | `REEMPLAZAR` |
-| `PORT` | Puerto de escucha en Spring | `8080` |
-| `WEBSITES_PORT` | Puerto expuesto a Azure App Service | `8080` |
+| `MONGODB_URI` | URI MongoDB, con valor local predeterminado | `mongodb://localhost:27017/dosw_parcial` |
+| `JWT_SECRET` | Clave JWT Base64 de al menos 32 bytes; mínimo 44 caracteres codificados | `REEMPLAZAR` |
+| `PORT` | Puerto de escucha Spring | `8080` |
+| `WEBSITES_PORT` | Puerto de enrutamiento de App Service | `8080` |
 
-Secrets del repositorio usados por Actions: `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. Secrets de `staging`: `AZURE_CREDENTIALS` y `AZURE_WEBAPP_NAME_DEVELOP`. Producción conserva `AZURE_CREDENTIALS` en su propio entorno y la variable `AZURE_WEBAPP_NAME_MAIN`; su configuración no es necesaria para ejecutar `develop`. Los destinos y la configuración de los entornos se explican en la sección 10. `JWT_SECRET` se configura en Azure; las pruebas usan un marcador exclusivo de test y no necesitan secretos reales.
+`application.yaml` es el único archivo de configuración de aplicación. Lee MongoDB y JWT del entorno y define `jwt.expiration-ms=3600000`. Spring Boot no carga automáticamente `.env`; establecer las variables en la sesión o en el servicio que ejecuta la aplicación.
 
-- No versionar secretos en `.env`, `.p12` o archivos de configuración.
-- `.env.example` es un ejemplo de nombres, **sin valores auténticos**.
-- La URL MongoDB remota se configura en **Azure App Service → Environment variables** (o Configuration), nunca en Git.
-- La clave `JWT_SECRET` debe ser Base64. El ejemplo de ejecución siguiente genera 32 bytes aleatorios en la sesión, sin imprimirlos. No pegar su resultado en un commit.
-- El archivo de configuración es exclusivamente `application.yaml`.
+Los nombres usados por Actions son `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `AZURE_CREDENTIALS` y `AZURE_WEBAPP_NAME_DEVELOP`. Producción usa sus propias `AZURE_CREDENTIALS` y la variable `AZURE_WEBAPP_NAME_MAIN`. El workflow no consume `JWT_SECRET` ni `MONGODB_URI`: las pruebas usan configuración de test y las variables de ejecución se administran en Azure. La ubicación efectiva de secrets y las variables de Azure no se inspeccionó durante esta auditoría.
+
+- `.env.example` contiene únicamente marcadores y una URI local sin credenciales.
+- `.gitignore` excluye `.env` reales, certificados, claves, credenciales Azure y `target/`.
+- Configurar la URI remota en Azure sin guardar usuario, contraseña o cadena de conexión en Git.
+- Publicar solo los nombres de secrets, nunca sus valores o capturas que los expongan.
 
 ## 7. Cómo ejecutar
 
-**Requisitos:** Java 21, Maven 3.9+, Docker (opcional) y MongoDB local o remoto.
+**Requisitos:** Java 21, Maven 3.9+, MongoDB local o remoto; Docker para las opciones con contenedores.
 
-1. Si ya existe MongoDB local en el puerto 27017, reutilizar esa instancia mediante `MONGODB_URI`. Si no existe y el puerto está libre, crear una instancia (terminal):
+1. Reutilizar MongoDB local si ya está escuchando en 27017. Si el puerto está libre y no existe una instancia, crearla:
+
    ```bash
    docker run -d --name mongo-parcial -p 27017:27017 mongo:7
    ```
-2. En PowerShell, establecer JWT antes de arrancar (solo en la sesión):
+
+2. En PowerShell, generar una clave temporal y configurar las variables sin imprimir secretos:
+
    ```powershell
    $jwtBytes = New-Object byte[] 32
    $jwtRandom = [Security.Cryptography.RandomNumberGenerator]::Create()
    try { $jwtRandom.GetBytes($jwtBytes) } finally { $jwtRandom.Dispose() }
    $env:JWT_SECRET = [Convert]::ToBase64String($jwtBytes)
-   $env:MONGODB_URI="mongodb://localhost:27017/dosw_parcial"
+   $env:MONGODB_URI = "mongodb://localhost:27017/dosw_parcial"
    mvn spring-boot:run
    ```
-3. Verificar `http://localhost:8080/api/v1/health` y `http://localhost:8080/swagger-ui/index.html`.
 
-En Linux/macOS se puede usar `export JWT_SECRET="$(openssl rand -base64 32)"` y `mvn spring-boot:run`.
+3. Abrir `http://localhost:8080/api/v1/health` y `http://localhost:8080/swagger-ui/index.html`.
+4. Para ejecutar la aplicación en Docker, seguir los comandos de la [sección 9](#9-docker), conservando las variables de la sesión.
+
+En Linux/macOS, generar `JWT_SECRET` con `openssl rand -base64 32`, exportar las variables y ejecutar `mvn spring-boot:run`.
 
 ## 8. Pruebas
 
 ```bash
+mvn test
 mvn clean verify
 ```
 
-Incluye una prueba JUnit + Mockito del controlador de salud, una prueba MVC para validar la respuesta HTTP pública y pruebas del contexto completo para comprobar Swagger UI, OpenAPI JSON/YAML, rechazo de rutas protegidas sin autenticación y una única cadena de seguridad. Estas pruebas no consultan MongoDB ni verifican conectividad remota. JaCoCo genera reportes HTML y XML en `target/site/jacoco/`.
+El primer comando ejecuta las pruebas; el segundo limpia, prueba, genera cobertura y empaqueta. El **12 de octubre de 2026**, `mvn clean verify` terminó con **BUILD SUCCESS**, salida **0**, **7 pruebas, 0 failures, 0 errors y 0 skipped**, con Java **21.0.10**. Tiempo total: **30,341 s**.
 
-Verificación local repetida el 10 de octubre de 2026, con Java 21.0.10 y Maven 3.9.16: `mvn clean verify` terminó en **BUILD SUCCESS**, con **7 pruebas, 0 failures, 0 errors y 0 skipped**. Se comprobaron `target/site/jacoco/index.html` y `target/site/jacoco/jacoco.xml`: cobertura de líneas **17/19 (89,47 %)** y de instrucciones **82/87 (94,25 %)**. Son resultados del proyecto base, sin funcionalidades de negocio.
+| Métrica JaCoCo | Cubierto / total | Resultado |
+|---|---|---|
+| Líneas | 17/19 | **89,47 %** |
+| Instrucciones | 82/87 | 94,25 % |
+| Métodos | 10/11 | 90,91 % |
+| Clases | 4/4 | 100 % |
 
-**Evidencias a capturar al ejecutar:**
-- [ ] `mvn clean verify` con `BUILD SUCCESS` (guardar captura en `docs/images/`).
-- [ ] Vista del reporte JaCoCo real (guardar captura en `docs/images/`).
+Se revisaron los reportes [HTML local](target/site/jacoco/index.html) y [XML local](target/site/jacoco/jacoco.xml), generados por Maven y excluidos de Git. En un clon nuevo deben regenerarse. El porcentaje de 94 % mostrado en el resumen HTML corresponde a instrucciones, no a líneas. No hay contador de ramas ni umbral mínimo configurado.
 
-No presentar capturas simuladas como evidencia de una ejecución.
+Las siete pruebas comprueban el controlador de salud, su respuesta HTTP pública, Swagger, OpenAPI JSON/YAML, el rechazo de solicitudes anónimas a otras rutas y una sola cadena de seguridad. No ejecutan consultas MongoDB ni validan JWT completo. Los avisos de Mockito/Byte Buddy y Springdoc no produjeron fallos.
+
+**Capturas pendientes:** `01-maven-build-success.png` y `02-jacoco-reporte.png`, según el [inventario](docs/images/README.md). No existen imágenes verificables que enlazar todavía.
 
 ## 9. Docker
+
+El [Dockerfile](Dockerfile) tiene dos etapas: Maven/Temurin 21 ejecuta `mvn -B clean verify --no-transfer-progress`; la imagen final Temurin 21 JRE copia el JAR y expone el puerto 8080. [.dockerignore](.dockerignore) excluye documentación, generados, entornos y secretos.
 
 ```bash
 docker build -t dosw-parcial:local .
 ```
 
-Verificación local del 9 de octubre de 2026: las imágenes base se descargaron y `docker build -t dosw-parcial:local .` terminó correctamente. El error anterior `lookup auth.docker.io: no such host` no se reprodujo; no se modificaron configuraciones globales de DNS, proxy o TLS. También se ejecutó `mvn clean verify` en la etapa builder Linux con Java 21: **BUILD SUCCESS, 7 pruebas, 0 failures, 0 errors y 0 skipped**.
-
-El 10 de octubre se modificó el Dockerfile para ejecutar `mvn -B clean verify --no-transfer-progress` durante cada construcción, sin `-DskipTests`. Se ejecutó `docker build -t dosw-parcial:cicd-validation .`: salida 0, **BUILD SUCCESS** en el builder Linux con Java 21.0.12.1 y **7 pruebas, 0 failures, 0 errors y 0 skipped**. Esta imagen es local; no se publicó, desplegó ni arrancó un contenedor nuevo en esta revisión.
-
-Para ejecutarlo desde PowerShell, con `JWT_SECRET` y `MONGODB_URI` establecidos:
+Con `JWT_SECRET` generado en la sesión de PowerShell y MongoDB del host accesible:
 
 ```powershell
 $env:MONGODB_URI = "mongodb://host.docker.internal:27017/dosw_parcial"
 docker run --rm -p 127.0.0.1:8081:8080 -e JWT_SECRET -e MONGODB_URI dosw-parcial:local
 ```
 
-En Windows/Mac, la URI MongoDB `localhost` dentro del contenedor apunta al propio contenedor. Para MongoDB en el host o publicado en su puerto 27017, usar `host.docker.internal` como en el ejemplo, o una red Docker compartida. El puerto 8081 del host debe estar libre; Spring Boot conserva su puerto interno 8080.
+En Windows/Mac, `host.docker.internal` permite alcanzar MongoDB del host; `localhost` dentro del contenedor identifica al propio contenedor. El puerto 8081 del host debe estar libre. Comprobar `http://localhost:8081/api/v1/health` y `http://localhost:8081/swagger-ui/index.html`.
 
-En este equipo, `american-bites-api` conserva el puerto 8080 de Windows. Se creó `dosw-parcial-win-b703a72a` con el mapeo **127.0.0.1:8081:8080**, sin alterar los servicios existentes. Las peticiones desde PowerShell a `http://localhost:8081` verificaron:
+**Resultados existentes:** construcción y ejecución local satisfactorias, confirmadas por el estudiante. La [auditoría histórica](docs/auditoria-primer-commit.md) registra build con pruebas y un contenedor con health/Swagger HTTP 200. La imagen también fue publicada en Docker Hub mediante Actions. No se reconstruyó, arrancó ni publicó una imagen durante esta auditoría final.
 
-| Ruta | Resultado real |
-|---|---|
-| `/api/v1/health` | HTTP 200; `status=UP`, `service=DOSW-ParcialT2` |
-| `/swagger-ui/index.html` | HTTP 200; Swagger UI |
-| `/v3/api-docs` | HTTP 200; OpenAPI JSON con GET health |
-| `/v3/api-docs.yaml` | HTTP 200; OpenAPI YAML con GET health |
-| `/api/v1/recurso-protegido`, sin credenciales | HTTP 403 |
-
-La conectividad MongoDB se comprobó por separado desde el nuevo contenedor, usando su URI de entorno y el driver de la imagen: **ping `ok=1` y lectura de metadatos de `dosw_parcial` satisfactoria**, sin escribir datos. El health solo informa que el servicio responde. Las capturas auténticas en `docs/images/` siguen pendientes.
-
-La auditoría previa al primer commit y su lista exacta de archivos están en [docs/auditoria-primer-commit.md](docs/auditoria-primer-commit.md).
+La comprobación histórica de ping contra MongoDB local no acredita una operación autenticada contra Atlas desde Azure. **Capturas pendientes:** `03-docker-contenedor.png` y `04-dockerhub-imagen-publicada.png`.
 
 ## 10. CI/CD
 
-`.github/workflows/ci-cd.yml` conserva el pipeline completo del HTML del parcial (secciones 6 y 7) tras un `push` a `main` o `develop`. También permite ejecución manual exclusivamente en esas ramas:
+El [workflow](.github/workflows/ci-cd.yml) se activa con push a `main` o `develop` y permite ejecución manual en esas ramas:
 
-1. `test`: Java 21 (Temurin), `mvn -B clean verify --no-transfer-progress` y artefactos JaCoCo y Surefire. La ausencia de reportes es un error. Las siete pruebas actuales no consultan MongoDB; no se omiten pruebas ni se requiere `JWT_SECRET` real para CI.
-2. `docker`: Buildx construye y carga la imagen Linux AMD64 sin credenciales. El Dockerfile también ejecuta `clean verify`. Después se comprueban los requisitos, se autentica en Docker Hub y se publica exactamente la imagen construida.
-3. `deploy_develop` o `deploy_main`: solamente el job correspondiente a la rama valida sus requisitos, inicia sesión con `azure/login@v2` y despliega mediante `azure/webapps-deploy@v3` la etiqueta única publicada por esa ejecución. Ambos dependen del éxito de `docker` y reciben su output `image_tag`; al reejecutar solamente un despliegue fallido no recalculan la etiqueta con otro `run_attempt`.
+1. `test`: configura Java 21, ejecuta `mvn -B clean verify --no-transfer-progress` y conserva reportes JaCoCo/Surefire como artefactos.
+2. `docker`: construye la imagen Linux AMD64 con Buildx, valida los nombres de secrets requeridos, inicia sesión en Docker Hub y publica la imagen construida.
+3. `deploy_develop` o `deploy_main`: según la rama, inicia sesión en Azure y despliega la etiqueta única entregada por el job `docker`.
 
-| Rama | Entorno GitHub | Etiquetas publicadas | Destino Azure |
+**Ejecución remota confirmada por el estudiante en `develop`:** `test`, `docker` y `deploy_develop` exitosos; `deploy_main` omitido correctamente por su condición de rama. La imagen fue publicada en Docker Hub y la aplicación quedó accesible en Azure. Faltan el enlace de la ejecución, su SHA, la etiqueta/digest y las capturas para corroborarlo desde el repositorio. No se declara probado un despliegue desde `main`.
+
+| Rama | Entorno declarado | Etiquetas publicadas | Destino Azure declarado |
 |---|---|---|---|
-| `develop` | `staging` | `develop-<SHA completo>-<run_id>-<run_attempt>` y alias `develop` | `secrets.AZURE_WEBAPP_NAME_DEVELOP` |
-| `main` | `production` | `main-<SHA completo>-<run_id>-<run_attempt>`, alias `main` y `latest` | `vars.AZURE_WEBAPP_NAME_MAIN` |
+| `develop` | `staging` | `develop-<SHA>-<run_id>-<run_attempt>` y alias `develop` | Secret `AZURE_WEBAPP_NAME_DEVELOP`; App Service confirmado `dosw-parcialt2-daniel-dev` |
+| `main` | `production` | `main-<SHA>-<run_id>-<run_attempt>`, alias `main` y `latest` | Variable `AZURE_WEBAPP_NAME_MAIN`; configuración remota no verificada |
 
-Azure consume la etiqueta única, nunca los alias. Cada reejecución tiene una etiqueta diferente; `develop` no publica `latest`. Cada despliegue consulta únicamente el destino de su rama: `develop` no exige configuración de producción. Al configurar producción se debe elegir un App Service distinto al de staging y limitar las credenciales a su destino; el workflow no compara valores entre entornos. La concurrencia por rama permite una ejecución activa sin cancelarla durante la publicación o el despliegue. GitHub puede reemplazar una ejecución pendiente por otra más reciente y no garantiza orden FIFO; no usar la reejecución de un commit antiguo como si fuera una promoción nueva.
+Azure consume la etiqueta única publicada. `develop` no publica `latest`. La separación por ramas y la entrega de la etiqueta son verificables en el workflow; el aislamiento efectivo de permisos y destinos remotos no se inspeccionó. La concurrencia por rama usa `cancel-in-progress: false`.
 
-Preparación manual requerida **antes del push a `develop`**:
+| Ámbito previsto | Nombres de configuración, sin valores |
+|---|---|
+| Publicación Docker Hub | Secrets `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` |
+| GitHub Environment `staging` | Secrets `AZURE_CREDENTIALS`, `AZURE_WEBAPP_NAME_DEVELOP` |
+| GitHub Environment `production` | Secret `AZURE_CREDENTIALS`, variable `AZURE_WEBAPP_NAME_MAIN` |
+| Azure, ejecución de la aplicación | `MONGODB_URI`, `JWT_SECRET`, `WEBSITES_PORT` (puerto 8080) |
 
-- Crear el repositorio Docker Hub `usuario/dosw-parcial-t2`. Guardar `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN` como secrets de Actions a nivel repositorio; el token debe permitir publicar en ese repositorio. Estos secrets están disponibles para los jobs de publicación y despliegue, salvo que un secret de entorno del mismo nombre los sobrescriba.
-- Crear el entorno GitHub `staging`, limitado a `develop`. Guardar allí `AZURE_CREDENTIALS` (JSON de Service Principal con `clientId`, `clientSecret`, `subscriptionId` y `tenantId`), con permisos limitados al App Service de desarrollo, y el secret `AZURE_WEBAPP_NAME_DEVELOP` con el nombre `dosw-parcialt2-daniel-dev`. No copiar valores de credenciales a archivos.
-- Producción puede configurarse después: crear `production`, limitarlo a `main`, guardar sus propias `AZURE_CREDENTIALS` y configurar la variable `AZURE_WEBAPP_NAME_MAIN` con otro App Service. No ejecutar el pipeline de `main` antes de completar esos requisitos.
-- Usar el App Service Linux de staging para un único contenedor; no se usa intercambio de slots. Configurar allí `MONGODB_URI` remota, `JWT_SECRET` Base64 aleatoria de al menos 32 bytes y `WEBSITES_PORT=8080` (puerto de destino 8080 si se utiliza el modelo con sidecar). Para un registro privado, configurar además la autenticación de Docker Hub en Azure. La autenticación del runner no configura la descarga de imágenes en App Service.
-- Verificar que Azure puede alcanzar MongoDB y descargar la imagen. Para una ejecución inmediata en `develop`, `staging` no debe exigir una aprobación manual pendiente. Producción puede tener revisores si el plan de GitHub lo permite.
+El pipeline operativo de `develop` reemplaza el estado anterior de preparación pendiente. Su éxito no acredita un ping o lectura autenticada en Atlas. Las pruebas CI no requieren credenciales reales de JWT ni operaciones sobre MongoDB. La configuración y ejecución de producción siguen sin verificarse y no se necesitan para documentar el despliegue de desarrollo.
 
-**Sin estos requisitos no se garantiza una ejecución verde completa.** La falta de credenciales produce un error explícito; no se omiten publicación o despliegue para simular éxito. `JWT_SECRET` y `MONGODB_URI` de ejecución permanecen en Azure: el workflow no las configura ni las valida remotamente. Un job de despliegue exitoso tampoco demuestra por sí solo HTTP 200; comprobar health y Swagger públicamente después.
-
-El 10 de octubre de 2026 se validó localmente el workflow corregido con **actionlint 1.7.12**, sin errores (salida 0). Esta comprobación no ejecuta Actions ni valida credenciales, publicación o despliegue. Los entornos y su aislamiento se basan en la [documentación de GitHub](https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments); la serialización se explica en [concurrencia de Actions](https://docs.github.com/en/actions/concepts/workflows-and-actions/concurrency), y la acción de despliegue está documentada en [Azure/webapps-deploy](https://github.com/Azure/webapps-deploy).
-
-**Evidencias pendientes:**
-- [ ] Captura real de Actions en verde (`docs/images/`).
-- [ ] Captura de Docker Hub con imagen publicada (`docs/images/`).
-- [ ] URL Azure /health con respuesta 200 (`docs/images/`).
-- [ ] URL Swagger cargando (`docs/images/`).
-
-La revisión local, los requisitos pendientes y la lista exacta del commit están en [docs/auditoria-primer-commit.md](docs/auditoria-primer-commit.md). La estrategia está aplicada a los archivos locales; la configuración remota y sus evidencias siguen pendientes.
+**Evidencias pendientes de incorporar:** `05-github-actions-develop.png`, `04-dockerhub-imagen-publicada.png`, `06-azure-health-http-200.png` y `07-azure-swagger-ui.png`. Ver el [inventario](docs/images/README.md) y la [tabla de cumplimiento](docs/reporte-final-prerrequisitos.md#tabla-de-cumplimiento).
 
 ## 11. Herramientas de modelado y diseño (evidencias)
 
-Herramienta elegida para UML: **PENDIENTE (Draw.io, Lucidchart o Miro)**.
+Herramienta UML: **pendiente de confirmar la selección y el acceso a la cuenta** (Lucidchart, Draw.io o Miro). `docs/uml/` conserva `.gitkeep`; no contiene diagramas del laboratorio.
 
-Herramienta para UI: **Figma**.
+Herramienta de interfaces: **Figma**; el acceso a una cuenta **no está verificado**.
 
-- [ ] Captura **real** de acceso a la herramienta de UML guardada en `docs/images/` y enlazada aquí.
-- [ ] Captura **real** de acceso a Figma guardada en `docs/images/` y enlazada aquí.
+- Captura UML pendiente: `10-cuenta-uml.png`.
+- Captura Figma pendiente: `11-cuenta-figma.png`.
 
-Una vez agregadas las imágenes, insertar sus enlaces de Markdown en esta sección, por ejemplo `![Cuenta de Figma](docs/images/figma-cuenta.png)`.
+No hay capturas auténticas en el repositorio que permitan insertar referencias Markdown a imágenes existentes. Incorporarlas y enlazarlas solo después de comprobar su contenido, según el [inventario](docs/images/README.md).
 
----
-
-**Prerrequisitos externos pendientes de comprobación:** invitar al profesor, configurar Docker Hub y Azure, comprobar Actions en verde, y adjuntar capturas auténticas y URL del despliegue. El repositorio y las ramas `main` y `develop` ya existen.
+Pendientes del estudiante: agregar al profesor y confirmar su acceso; aportar las capturas reales; completar enlaces de Actions y Docker Hub; verificar una operación MongoDB autenticada desde Azure y las cuentas UML/Figma. El grupo ya está registrado como **Grupo 1**. El detalle y las limitaciones de evidencia figuran en la [auditoría final](docs/reporte-final-prerrequisitos.md).
